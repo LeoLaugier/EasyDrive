@@ -1,0 +1,97 @@
+{% extends 'objRequests/base.html' %}
+{% load bootstrap3 %}
+{% load static %}
+{% block content %}
+
+	<div class="container">
+<!-- START ALERTS AND CALLOUTS -->
+      <h2 class="page-header">Bienvenue sur EasyDrive !</h2>
+  
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <i class="fa fa-car"></i>
+
+              <h3 class="box-title"><b>EasyDrive</b> est une solution de conduite sûre, économique et écologique.</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="alert alert-danger alert-dismissible">
+                
+                <h4><i class="icon fa fa-dashboard"></i> Gestion de flotte automobile</h4>
+                Gérez votre flotte automobile à distance depuis votre ordinateur en plaçant les capteurs EasySensors dans vos véhicules.
+              </div>
+              <div class="alert alert-info alert-dismissible">
+                
+                <h4><i class="icon fa fa-line-chart"></i> Analyse de conduite</h4>
+                Analysez automatiquement la conduite de vos chaffeurs selon des critères de sécurité, confort, écoconduite et vitesse.
+              </div>
+              <div class="alert alert-warning alert-dismissible">
+                
+                <h4><i class="icon fa fa-eur"></i> Économie </h4>
+                Économisez sur les coûts occasionnés par une conduite agressive en sanctionnant les conduites coûteuses.
+              </div>
+              <div class="alert alert-success alert-dismissible">
+                
+                <h4><i class="icon fa fa-globe"></i> Écoconduite </h4>
+                Soyez acteurs de la transition énergétique et préparez vos conducteurs à adopter une conduite responsable de l'environnement.
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+
+
+
+<!-- <div class="container">
+    <center>
+    <h1>Bienvenue sur EasyDrive ! </h1>
+    </center>
+    <div class="row">
+    <div class="col-md-5"></div>
+    <div class="col-md-1">
+    <img src="{% static 'images/logo.png' %}" alt="logo EasyDrive" />
+    </div>
+    <div class="col-md-5"></div>
+    </div>
+	<br>
+	<center>
+	<h4>EasyDrive est une solution de conduite sûre, économique et écologique.</h4>
+	<p>
+	<b>Gérez</b> votre flotte automobile à distance.
+	<br><b>Analysez</b> automatiquement la conduite de vos chaffeurs.
+	<br><b>Économisez</b> sur les coûts occasionnés par une conduite agressive.
+	<br><b>Soyez acteurs</b> de la transition énergétique.
+	<p>
+	
+	</center> -->
+	<br></br>
+	<br></br>
+	<div class="row">
+	<div class="col-md-1"></div>
+        <div class="col-md-3"><img src="{% static 'images/logo.png' %}" alt="logo EasyDrive" /></div>
+
+        <div class="col-md-4">
+
+{% if error %}
+<p><strong>Utilisateur inconnu ou mot de passe erroné</strong></p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<h1>Bienvenue {{ user.username }} !</h1>
+{% else %}
+<form method="post" action="login">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="Connection" />
+</form>
+{% endif %}
+        </div>
+        <div class="col-md-3"><img src="{% static 'images/LogoCS1.png' %}" alt="logo EasyDrive" /></div>
+    </div>
+</div>
+{% endblock %}

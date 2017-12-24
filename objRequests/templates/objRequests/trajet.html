@@ -1,0 +1,566 @@
+{% extends 'objRequests/base.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5Js3A2ykOhdy5ssY6BxkZBNy3a4oKQ_k"></script>
+	
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">google.load("visualization", "1", {packages:["corechart"]}); // Set chart options
+      </script>
+<style>
+       #map {
+        height: 100px;
+        width: 100%;
+       }</style>
+
+
+<script type="text/javascript">
+
+    
+  var directionDisplay;
+  var directionsService = new google.maps.DirectionsService();
+  var map;
+
+  function initialize() {
+  	var mesure = {{json_mesures |safe}}
+  	console.log()
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    var chicago = new google.maps.LatLng(48.708808, 2.163690);
+    
+    var myOptions = {
+      zoom: 6,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      center: chicago
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    directionsDisplay.setMap(map);
+    var uluru = {lat:mesure[0] , lng: mesure[1]};
+    var marker = new google.maps.Marker({
+          position: uluru,
+          map: map,
+          label : 'V'
+        });
+
+    calcRoute();
+  }
+  
+  function calcRoute() {
+
+  	var latitude = {{json_latitudes |safe}}
+  	var longitude = {{json_longitudes |safe}}
+  	var debut = new google.maps.LatLng({{lat_debut}},{{long_debut}})
+  	var arrivee = new google.maps.LatLng({{lat_fin}},{{long_fin}})
+  	var waypoints =[]
+  	console.log(latitude,longitude)
+  	for (var i = 0; i < 23; i++) {
+  		waypoints.push({location : new google.maps.LatLng(latitude[i],longitude[i]),stopover : false})
+  	}
+  	console.log({{lat_fin}},{{long_fin}})
+
+  	    var request = {
+        origin: debut,
+        destination: arrivee,
+        waypoints: waypoints,
+        optimizeWaypoints: true,
+        travelMode: google.maps.DirectionsTravelMode.DRIVING
+    };
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        var route = response.routes[0];
+        var summaryPanel = document.getElementById("directions_panel");
+        summaryPanel.innerHTML = "";
+        // For each route, display summary information.
+        for (var i = 0; i < route.legs.length; i++) {
+          var routeSegment = i + 1;
+          summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
+          summaryPanel.innerHTML += route.legs[i].start_address + " to ";
+          summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
+          summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
+        }
+      } else {
+        $('[id="map_canvas"]').replaceWith('<span class="label label-danger">Carte non disponible</span>')
+      }
+    });
+  }
+</script>
+
+
+        
+      
+
+	
+	
+	
+<body onload="initialize()"	>
+ <!--	<div id="linechart_material" style="width: 900px; height: 500px"></div> -->
+	
+<section class="content-header">
+      <h1>
+        Tableau de bord
+        <small>Capteur n°{{trajet.device.device_id}}</small>
+      </h1>
+     
+</section>
+<section class="content">
+	
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h2>{{trajet.device.nom}}</h2>
+
+              <p>Moteur {{carburant}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person"></i>
+            </div>
+            <a href="{% url "objRequests:trajets" trajet.device.id %}" class="small-box-footer">Statistiques du conducteur <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-purple">
+            <div class="inner">
+              <h2>Début</h2>
+
+              <p>{{trajet.debut}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-ios-time"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-maroon">
+            <div class="inner">
+              <h2>Durée</h2>
+
+              <p>{{trajet.duree}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-ios-stopwatch"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-olive">
+            <div class="inner">
+              <h2>Distance</h2>
+
+              <p>{{trajet.distance}} km</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-ios-location"></i>
+            </div>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+
+<div class="row">
+	<div class="col-sm-6">
+	
+
+		<!-- Apply any bg-* class to to the info-box to color it -->
+		<div class="info-box bg-green">
+		  <span class="info-box-icon"><i class="fa fa-leaf" aria-hidden="true"></i></span>
+		  <div class="info-box-content">
+			<span class="info-box-text">Note écoconduite</span>
+			<span class="info-box-number">{{note_eco|floatformat}}/10</span>
+			<!-- The progress section is optional -->
+			<div class="progress">
+			  <div class="progress-bar" style={{progress_bar_eco}}></div>
+			</div>
+			<span class="progress-description">
+			  {{message_eco}}
+			</span>
+		  </div><!-- /.info-box-content -->
+		</div><!-- /.info-box -->
+		
+		
+		
+		<div class="info-box bg-red">
+		  <span class="info-box-icon"><i class="fa fa-shield" aria-hidden="true"></i></span>
+		  <div class="info-box-content">
+			<span class="info-box-text">Note sécurité</span>
+			<span class="info-box-number">{{note_secu|floatformat}}/10</span>
+			<!-- The progress section is optional -->
+			<div class="progress">
+			  <div class="progress-bar" style={{progress_bar_secu}}></div>
+			</div>
+			<span class="progress-description">
+			  {{message_secu}}
+			</span>
+		  </div><!-- /.info-box-content -->
+		</div><!-- /.info-box -->
+		
+		
+		
+		<div class="info-box bg-blue">
+		  <span class="info-box-icon"><i class="fa fa-taxi" aria-hidden="true"></i></span>
+		  <div class="info-box-content">
+			<span class="info-box-text">Note confort</span>
+			<span class="info-box-number">{{note_conf|floatformat}}/10</span>
+			<!-- The progress section is optional -->
+			<div class="progress">
+			  <div class="progress-bar" style={{progress_bar_conf}}></div>
+			</div>
+			<span class="progress-description">
+			  {{message_conf}}
+			</span>
+		  </div><!-- /.info-box-content -->
+		</div><!-- /.info-box -->
+		
+    
+	
+		<div class="info-box bg-yellow">
+		  <span class="info-box-icon"><i class="fa fa-tachometer" aria-hidden="true"></i></span>
+		  <div class="info-box-content">
+			<span class="info-box-text">Note vitesse</span>
+			<span class="info-box-number">{{note_vit|floatformat}}/10</span>
+			<!-- The progress section is optional -->
+			<div class="progress">
+			  <div class="progress-bar" style={{progress_bar_vit}}></div>
+			</div>
+			<span class="progress-description">
+			  {{message_vit}}
+			</span>
+		  </div><!-- /.info-box-content -->
+		</div><!-- /.info-box -->
+            		
+		<div class="info-box bg-teal">
+		  <span class="info-box-icon"><i class="{{logo_glob}}" aria-hidden="true"></i></span>
+		  <div class="info-box-content">
+			<span class="info-box-text">Note globale</span>
+			<span class="info-box-number">{{note_glob|floatformat}}/10</span>
+			<!-- The progress section is optional -->
+			<div class="progress">
+			  <div class="progress-bar" style={{progress_bar_glob}}></div>
+			</div>
+			<span class="progress-description">
+			  {{message_glob}}
+			</span>
+		  </div><!-- /.info-box-content -->
+		</div><!-- /.info-box -->	
+			
+			
+			
+			
+			
+			
+		
+
+	</div>
+
+	<div class="col-sm-6 col-xs-6">
+		<div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#ecoconduite" data-toggle="tab">Écoconduite</a></li>
+              <li><a href="#vitesse" data-toggle="tab">Vitesse</a></li>
+              <li><a href="#acceleration" data-toggle="tab">Accélération</a></li>
+              <li><a href="#moteur" data-toggle="tab">Moteur</a></li>
+              <li><a href="#confort" data-toggle="tab">Confort</a></li>
+            </ul>
+
+			<div class="tab-content">
+            	
+
+	        	<div class=" active tab-pane" id="ecoconduite">
+
+	            	<div class="box-header with-border">
+	              		<h3 class="box-title">Graphiques écoconduite : régime moteur</h3>
+	            	</div>
+	            	<!-- /.box-header -->
+	            	<!-- /.box-header -->
+	            	<div class="box-body">
+	            		{% if graphe2_non_dispo %}
+							<span class="label label-danger">Graphique non-disponible</span>
+						{% else %}
+							<div class="chart">
+		                    	<!-- Sales Chart Canvas -->
+		                    	{{ chart2.as_html }}
+	                		</div>
+						{% endif %}
+						
+	            	</div>
+	        	</div>
+	        	<div class=" tab-pane" id="vitesse">
+
+	            	<div class="box-header with-border">
+	              		<h3 class="box-title">Graphiques vitesse : vitesse (V) et limitation (L)</h3>
+	            	</div>
+	            	<!-- /.box-header -->
+	            	<div class="box-body">
+	            		{% if graphe1_non_dispo %}
+							<span class="label label-danger">Graphique non-disponible</span>
+						{% else %}
+							<div class="chart">
+		                    	<!-- Sales Chart Canvas -->
+		                    	{{ chart1.as_html }}
+	                		</div>
+						{% endif %}
+						
+	            	</div>
+	            </div>
+
+	        	<div class=" tab-pane" id="acceleration">
+
+	            	<div class="box-header with-border">
+	              		<h3 class="box-title">Accélération (A)</h3>
+	            	</div>
+	            	<!-- /.box-header -->
+	            	<div class="box-body">
+	            		{% if graphe4_non_dispo %}
+							<span class="label label-danger">Graphique non-disponible</span>
+						{% else %}
+							<div class="chart">
+		                    	<!-- Sales Chart Canvas -->
+		                    	{{ chart4.as_html }}
+	                		</div>
+						{% endif %}
+						
+	            	</div>
+	            </div>
+
+	            <div class=" tab-pane" id="moteur">
+
+	            	<div class="box-header with-border">
+	              		<h3 class="box-title">Graphiques moteur : MAF (M) et Charge du moteur (C)</h3>
+	            	</div>
+	            	<!-- /.box-header -->
+	            	<div class="box-body">
+	            		{% if graphe3_non_dispo %}
+							<span class="label label-danger">Graphique non-disponible</span>
+						{% else %}
+							<div class="chart">
+		                    	<!-- Sales Chart Canvas -->
+		                    	{{ chart3.as_html }}
+	                		</div>
+						{% endif %}
+						
+	            	</div>
+	            </div>
+
+	            <div class=" tab-pane" id="confort">
+
+	            	<div class="box-header with-border">
+	              		<h3 class="box-title">Graphique confort : lacet</h3>
+	            	</div>
+	            	<!-- /.box-header -->
+	            	<div class="box-body">
+	            		{% if graphe5_non_dispo %}
+							<span class="label label-danger">Graphique non-disponible</span>
+						{% else %}
+							<div class="chart">
+		                    	<!-- Sales Chart Canvas -->
+		                    	{{ chart5.as_html }}
+	                		</div>
+						{% endif %}
+						
+	            	</div>
+	            </div>
+
+
+	        
+			</div>
+	
+		</div>
+	</div>
+<div class="row">
+	<div class="col-sm-8">
+		<div class="box box-primary">
+            <div class="box-header">
+              <h3 class="box-title">Données brutes</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive ">
+              		<div class="row">
+              			<div class="col-sm-12">
+              				<table id="example2" class="table table-hover " role="grid">
+				                <thead>
+					                <tr role="row"><th>Date</th>
+					                	<th>Latitude</th>
+										<th>Longitude</th>
+										<th>Vitesse (km/h)</th>
+										<th>Limitation (km/h)</th>
+										<th>Régime moteur (tours/minute)</th>
+										<th>MAF (g/s)</th>
+										<th>Charge du moteur (%)</th>
+										<th>Accélération² (m²/s⁴)</th>
+										<th>Lacet (°/s)</th>
+										<th>Numéro de la mesure</th>
+									</tr>
+					                </thead>
+				                <tbody>
+					      			{% for mesure in mesures %}
+						                <tr role="row" class="odd">
+						                 	<td><span class="badge bg-green">{{mesure.timestamp}}</span></td>
+											<td>{{mesure.latitude}}</td>											
+											<td>{{mesure.longitude}}</td>
+											<td>
+												{% if mesure.speed > mesure.vitesse_limite %}
+													<span class="label label-danger">{{mesure.speed}}</span>
+												{% else %}
+													<span class="label label-success">{{mesure.speed}}</span>
+												{% endif %}
+											</td>
+											<td>{{mesure.vitesse_limite}}</td>
+											<td>						
+												{% if mesure.rpm > 5000 %}
+													<span class="label label-danger">{{mesure.rpm}}</span>
+												{% elif mesure.rpm > 4000 %}
+													<span class="label label-warning">{{mesure.rpm}}</span>
+												{% else %}
+													{{mesure.rpm}}
+												{% endif %}
+											</td>
+											<td>{{mesure.maf}}</td>
+											<td>{{mesure.load}}</td>
+											<td>						
+												{% if mesure.acceleration > 90 %}
+													<span class="label label-danger">{{mesure.acceleration|floatformat}}</span>
+												{% else %}
+													<span class="label label-success">{{mesure.acceleration|floatformat}}</span>
+												{% endif %}
+											</td>
+											<td>						
+												{% if mesure.lacet > 30 %}
+													<span class="label label-danger">{{mesure.lacet}}</span>
+												{% elif mesure.lacet > 30 %}
+													<span class="label label-warning">{{mesure.lacet}}</span>
+												{% else %}
+													{{mesure.lacet}}
+												{% endif %}
+											</td>
+												<td>{{mesure.count}}</td>
+										</tr>
+									{% empty %}
+										<tr>
+											<td>Pas de mesure.</td>
+										</tr>
+					                {% endfor %}
+					            </tbody>
+				                <tfoot>
+					                <tr>
+					                	<th>Date</th>
+										<th>Longitude</th>
+										<th>Latitude</th>
+										<th>Vitesse (km/h)</th>
+										<th>Limitation (km/h)</th>
+										<th>Régime moteur (tours/minute)</th>
+										<th>MAF (g/s)</th>
+										<th>Charge du moteur (%)</th>
+										<th>Accélération² (m²/s⁴)</th>
+										<th>Lacet (°/s)</th>
+										<th>Numéro de la mesure</th>
+									</tr>
+				                </tfoot>
+            				</table>
+        				</div>
+    				</div>
+    				<div class="row"><div class="col-sm-5">
+    				<div class="dataTables_info" id="example2_info" role="status" aria-live="polite"><span class="badge bg-blue"> Page {{mesures.number}} sur {{mesures_pag.num_pages}}</span> </div>
+				</div>
+				<div class="col-sm-7">
+					<div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+						<div class="col-sm-5">
+							<ul class="pagination">{% if mesures.has_previous %}
+								<li class="paginate_button previous" id="example2_previous">
+									<a href="{% url "objRequests:trajet" trajet_id mesures.previous_page_number %}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+								</li>{% endif %}
+								{% if mesures.has_next %}
+								<li class="paginate_button next" id="example2_next">
+								<a href="{% url "objRequests:trajet" trajet_id mesures.next_page_number %}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+						<div class="col-sm-5">
+							<form action="{% url "objRequests:trajet" trajet.id %}" method="post">
+    							{% csrf_token %}
+								<div class="form-group has-success">
+                  					<label class="control-label" for="inputSuccess"><i class="fa fa-book"></i> Aller à la page :</label>
+                  					<input type="number" name="page" required="" id="id_page" onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" class="form-control input-sm">
+                				</div>
+                			</form >
+                		</div>
+							
+
+						
+					</div>
+				</div>
+			
+			</div>
+		</div>
+    </div>            <!-- /.box-body -->
+</div>
+
+
+	
+	
+	<div class="col-sm-4">
+		 <!-- MAP & BOX PANE -->
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">Trajet</h3>
+            
+			  <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+			 </div>
+            <!-- /.box-header -->
+            <div class="box-body carte ">
+            	{% if carte_non_dispo %}
+					<span class="label label-danger">Carte non disponible</span>
+				{% else %}
+							<!-- Map will be created here -->
+	                <!-- <div id="map" style="height: 400px;"></div> -->
+	                <div id="map_canvas" style="height: 400px;"></div>
+				{% endif %}
+			
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+	</div>
+</section>
+
+
+
+<!-- DataTables -->
+<script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- page script -->
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false
+    });
+  });
+</script>
+
+
+{% endblock %}
+</body>
+
+

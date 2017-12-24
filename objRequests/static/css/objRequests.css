@@ -1,0 +1,35 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* title */
+.navbar-inverse .navbar-brand {
+    color: orange;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: orange;
+}
+
+/* Boutons */
+
+.btn-primary {
+    background-color: orange;
+    border-color: orange;
+    border-right-color: orange;
+    border-bottom-color: orange;
+    border-top-color: orange;
+    background: orange;
+}
+
+.btn-primary:hover {
+    color: orange;
+    border-color: black;
+    background-color: black;
+}
+
+.principal-text {
+    text-align: center;
+}

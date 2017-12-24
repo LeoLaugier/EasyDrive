@@ -1,0 +1,12 @@
+*.pyc
+*/*.pyc
+*/*/*.pyc
+*/*/*/*.pyc
+db.sqlite3
+pip-selfcheck.json
+bin/
+lib/
+.idea/
+include/
+*/migrations/
+local_static

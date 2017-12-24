@@ -1,0 +1,24 @@
+{% load order_by %}
+{% for device in devices %}
+<li class="treeview">
+          <a href="#">
+            <i class="fa fa-id-card-o"></i> <span>{{device.nom}}</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+                <li>
+                  <a href="{% url "objRequests:trajets" device.id %}" class="treeview" ><i class="fa fa-tachometer"></i> Index de {{device.nom}} </a>
+                </li>
+
+          	{% for trajet in device.trajet_set.all|order_by:"-id"|slice:":20"%}
+
+                <li>
+                  <a href="{% url "objRequests:trajet" trajet.id %}" class="treeview" ><i class="fa fa-road"></i>{{trajet.debut}}</a>
+                </li>
+                
+                 {% endfor %}
+</ul>
+        </li>
+{% endfor %}

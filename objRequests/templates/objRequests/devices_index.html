@@ -1,0 +1,48 @@
+{% extends 'objRequests/base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+<section class="content-header">
+      <h1>
+        
+    Sélection du capteur 
+        
+      </h1>
+     
+
+
+<section class="content">
+    
+
+<div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Veuillez sélectionner un capteur pour afficher les caractéristiques et l'évaluation du chauffeur.</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-hover" role="grid">
+                <tbody><tr>
+                  <th>Nom du conducteur</th>
+                  <th>Numéro du capteur</th>
+                  <th>Nombre de trajets</th>
+                </tr>
+                {% for device in devices %}
+                <tr>
+                  <td><a href="{% url "objRequests:trajets" device.id %}" ><span class="badge bg-green">{{device.nom}}</span></a></td>
+        
+                  <td><a href="{% url "objRequests:trajets" device.id %}" ><span class="badge bg-red">{{device.device_id}}</span></a></td>
+                  <td><a href="{% url "objRequests:trajets" device.id %}" ><span class="badge bg-red">{{device.trajet_set.count}}</span></a></td>
+                </tr>
+   				{% empty %}
+   				 <tr>
+                  <td>Pas de capteur pour l'instant</td>
+                </tr>
+                {% endfor %}
+              </tbody></table>
+            </div>
+            <!-- /.box-body -->
+            
+          </div>
+
+{%endblock%}
+</section>

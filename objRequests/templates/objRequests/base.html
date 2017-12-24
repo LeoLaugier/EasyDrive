@@ -1,0 +1,58 @@
+{% extends 'adminlte/base.html' %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyDrive</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/objRequests.css' %}">
+      <!-- DataTables -->
+    <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css">
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url "objRequests:index" %}">EasyDrive</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ user.username }}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url "objRequests:logout_view" %}">Logout/</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url "objRequests:login_view" %}"><span class="glyphicon glyphicon-log-in"></span> Se connecter</a></li>
+                    {% endif %}
+                </ul>
+        </div>
+      </div>
+    </nav>
+
+    {%block content %}
+    {%endblock%}
+
+    <hr>
+    <div class="container">
+      <footer>
+          <p></p>
+          <p>&copy; 2017 EasyDrive, Inc.</p>
+      </footer>
+    </div>
+</body>
+</html>

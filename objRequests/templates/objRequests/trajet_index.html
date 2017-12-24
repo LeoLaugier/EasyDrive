@@ -1,0 +1,367 @@
+{% extends 'objRequests/base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+	
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">google.load("visualization", "1", {packages:["corechart"]}); // Set chart options
+      </script>
+
+<body>
+<section class="content-header">
+      <h1>
+        
+    {{trajet.device.nom}}  
+        <small>Conducteur</small>
+      </h1>
+     
+</section>
+<section class="content">
+<div class="row">
+	<div class="col-sm-6">
+		<div class="box box-info">
+	        <div class="box-header">
+				<h3 class="box-title">Notes par trajet</h3>
+				<hr />
+				<p>Veuillez sélectionner un trajet pour afficher les caractéristiques et l'évaluation du parcours.</p>
+	        </div>
+	        <!-- /.box-header -->
+	        <div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+	                <tbody>
+	                	<tr>
+	                		<th>Trajet</th>
+							<th>Note écoconduite</th>
+							<th>Note sécurité</th>
+							<th>Note confort</th>
+							<th>Note vitesse</th>							
+		                </tr>
+
+		    			{% for trajet in trajets %}
+		    			
+			                <tr>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">
+									{% if trajet.note_glob < 3 %}
+										<span class="label label-danger">{{trajet.debut}}</span>
+									{% elif trajet.note_glob < 6 %}
+										<span class="label label-warning">{{trajet.debut}}</span>
+									{% elif trajet.note_glob < 7 %}
+										<span class="label label-primary">{{trajet.debut}}</span>
+									{% elif trajet.note_glob < 8 %}
+										<span class="label label-info">{{trajet.debut}}</span>
+									{% elif trajet.note_glob > 8 %}
+										<span class="label label-success">{{trajet.debut}}</span>
+
+									{% else %}
+										{{trajet.debut}}
+									{% endif %}
+								</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">
+									{% if trajet.note_eco < 3 %}
+										<span class="label label-danger">{{trajet.note_eco}}/10</span>
+									{% elif trajet.note_eco < 6 %}
+										<span class="label label-warning">{{trajet.note_eco}}/10</span>
+									{% elif trajet.note_eco < 7 %}
+										<span class="label label-primary">{{trajet.note_eco}}/10</span>
+									{% elif trajet.note_eco < 8 %}
+										<span class="label label-info">{{trajet.note_eco}}/10</span>
+									{% elif trajet.note_eco > 8 %}
+										<span class="label label-success">{{trajet.note_eco}}/10</span>
+
+									{% else %}
+										{{trajet.note_eco}}
+									{% endif %}
+								</a></td>
+
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">
+									{% if trajet.note_secu < 3 %}
+										<span class="label label-danger">{{trajet.note_secu}}/10</span>
+									{% elif trajet.note_secu < 6 %}
+										<span class="label label-warning">{{trajet.note_secu}}/10</span>
+									{% elif trajet.note_secu < 7 %}
+										<span class="label label-primary">{{trajet.note_secu}}/10</span>
+									{% elif trajet.note_secu < 8 %}
+										<span class="label label-info">{{trajet.note_secu}}/10</span>
+									{% elif trajet.note_secu > 8 %}
+										<span class="label label-success">{{trajet.note_secu}}/10</span>
+
+									{% else %}
+										{{trajet.note_secu}}
+									{% endif %}
+								</a></td>
+
+
+
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">
+									{% if trajet.note_conf < 3 %}
+										<span class="label label-danger">{{trajet.note_conf}}/10</span>
+									{% elif trajet.note_conf < 6 %}
+										<span class="label label-warning">{{trajet.note_conf}}/10</span>
+									{% elif trajet.note_conf < 7 %}
+										<span class="label label-primary">{{trajet.note_conf}}/10</span>
+									{% elif trajet.note_conf < 8 %}
+										<span class="label label-info">{{trajet.note_conf}}/10</span>
+									{% elif trajet.note_conf > 8 %}
+										<span class="label label-success">{{trajet.note_conf}}/10</span>
+
+									{% else %}
+										{{trajet.note_conf}}
+									{% endif %}
+								</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">
+									{% if trajet.note_vit < 3 %}
+										<span class="label label-danger">{{trajet.note_vit}}/10</span>
+									{% elif trajet.note_vit < 6 %}
+										<span class="label label-warning">{{trajet.note_vit}}/10</span>
+									{% elif trajet.note_vit < 7 %}
+										<span class="label label-primary">{{trajet.note_vit}}/10</span>
+									{% elif trajet.note_vit < 8 %}
+										<span class="label label-info">{{trajet.note_vit}}/10</span>
+									{% elif trajet.note_vit > 8 %}
+										<span class="label label-success">{{trajet.note_vit}}/10</span>
+
+									{% else %}
+										{{trajet.note_vit}}
+									{% endif %}
+								</a></td>
+
+			                </tr>
+			            
+			            {% empty %}
+							<p>Pas de trajet pour l'instant...</li>
+					    {% endfor %}    
+					</tbody>
+				</table>
+	        </div>
+	        <div class="box-footer">
+		        <div class="col-sm-7">
+					<div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+						<div class="col-sm-5">
+							<ul class="pagination">{% if trajets.has_previous %}
+								<li class="paginate_button previous" id="example2_previous">
+									<a href="{% url "objRequests:trajets" device_id trajets.previous_page_number %}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+								</li>{% endif %}
+								{% if trajets.has_next %}
+								<li class="paginate_button next" id="example2_next">
+								<a href="{% url "objRequests:trajets" device_id trajets.next_page_number %}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+						<div class="col-sm-5">
+							<form action="{% url "objRequests:trajets" device_id %}" method="post">
+	    						{% csrf_token %}
+								<div class="form-group has-success">
+	                  				<label class="control-label" for="inputSuccess"><i class="fa fa-book"></i> Aller à la page :</label>
+	                  					<input type="number" name="page" required="" id="id_page" onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" class="form-control input-sm">
+	                			</div>
+	                		</form >
+	                	</div>
+								
+
+							
+					</div>
+				</div>
+			</div>
+        <!-- /.box-body -->
+	</div>		
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="box box-primary">
+            <div class="box-header">
+              <h3 class="box-title">Evolution des notes dans le temps</h3>
+            </div>
+            
+            <div class="box-footer">
+             	{% if pas_trajet %}Pas de trajet pour l'instant ...
+            {% else %}
+              <div class="row">
+                  	<div class="col-sm-3 col-xs-6">
+	                  	<div class="description-block border-right">
+	                   
+	                    	{% if var_note_eco > 0 %}
+	                    	 <span class="description-percentage text-green">
+	                    		<i class="fa fa-caret-up"></i> {{var_note_eco}}%
+	                    	</span>
+	                    	{% elif var_note_eco == 0 %}
+	                    		 <span class="description-percentage text-orange">
+	                    		<i class="fa fa-caret-left"></i> {{var_note_eco}}%
+	                    	</span>
+	                    	{% else %}
+	                    		 <span class="description-percentage text-red">
+	                    		<i class="fa fa-caret-down"></i> {{var_note_eco}}%
+	                    	</span>
+	                    	{% endif %} 
+	                    	
+	                    
+	                    	<h5 class="description-header">{{trajets.last.note_eco}}</h5>
+	                    	<span class="description-text">Dernière note d'écoconduite</span>
+	                  	</div>
+                  <!-- /.description-block -->
+                	</div>
+                 	<div class="col-sm-3 col-xs-6">
+						<div class="description-block border-right">
+
+							{% if var_note_secu > 0 %}
+							 <span class="description-percentage text-green">
+								<i class="fa fa-caret-up"></i> {{var_note_secu}}%
+							</span>
+							{% elif var_note_secu == 0 %}
+								 <span class="description-percentage text-orange">
+								<i class="fa fa-caret-left"></i> {{var_note_secu}}%
+							</span>
+							{% else %}
+								 <span class="description-percentage text-red">
+								<i class="fa fa-caret-down"></i> {{var_note_secu}}%
+							</span>
+							{% endif %} 
+							
+
+							<h5 class="description-header">{{trajets.last.note_secu}}</h5>
+							<span class="description-text">Dernière note de sécurité</span>
+						</div>
+						<!-- /.description-block -->
+					</div>
+                 	<div class="col-sm-3 col-xs-6">
+	                  <div class="description-block border-right">
+	                   
+	                    	{% if var_note_conf > 0 %}
+	                    	 <span class="description-percentage text-green">
+	                    		<i class="fa fa-caret-up"></i> {{var_note_conf}}%
+	                    	</span>
+	                    	{% elif var_note_conf == 0 %}
+	                    		 <span class="description-percentage text-orange">
+	                    		<i class="fa fa-caret-left"></i> {{var_note_conf}}%
+	                    	</span>
+	                    	{% else %}
+	                    		 <span class="description-percentage text-red">
+	                    		<i class="fa fa-caret-down"></i> {{var_note_conf}}%
+	                    	</span>
+	                    	{% endif %} 
+	                    	
+	                    
+	                    <h5 class="description-header">{{trajets.last.note_conf}}</h5>
+	                    <span class="description-text">Dernière note de Confort</span>
+	                  </div>
+	                  <!-- /.description-block -->
+	                </div>
+	                <div class="col-sm-3 col-xs-6">
+	                  <div class="description-block border-right">
+	                   
+	                    	{% if var_note_vit > 0 %}
+	                    	 <span class="description-percentage text-green">
+	                    		<i class="fa fa-caret-up"></i> {{var_note_vit}}%
+	                    	</span>
+	                    	{% elif var_note_vit == 0 %}
+	                    		 <span class="description-percentage text-orange">
+	                    		<i class="fa fa-caret-left"></i> {{var_note_vit}}%
+	                    	</span>
+	                    	{% else %}
+	                    		 <span class="description-percentage text-red">
+	                    		<i class="fa fa-caret-down"></i> {{var_note_vit}}%
+	                    	</span>
+	                    	{% endif %} 
+	                    	
+	                    
+	                    <h5 class="description-header">{{trajets.last.note_vit}}</h5>
+	                    <span class="description-text">Dernière note de vitesse</span>
+	                  </div>
+                  <!-- /.description-block -->
+                	</div>
+                </div>
+                {% endif %}
+              </div>
+              
+              <!-- /.row -->
+        </div>
+			<div class="box-body">
+		            		{% if graphe2_non_dispo %}
+								<span class="label label-danger">Graphe non disponible</span>
+							{% else %}
+								<div class="chart">
+			                    	<!-- Sales Chart Canvas -->
+			                    	{{ chart2.as_html }}
+		                		</div>
+							{% endif %}
+							
+		    </div>
+	</div>
+	<div class="col-sm-12">
+		<div class="box box-success">
+	        <div class="box-header">
+				<h3 class="box-title">Statistiques des trajets</h3>
+				<hr />
+				<p>Veuillez sélectionner un trajet pour afficher les caractéristiques et l'évaluation du parcours.</p>
+	        </div>
+	        <!-- /.box-header -->
+	        <div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+	                <tbody>
+	                	<tr>
+							<th>Heure de départ</th>
+							<th>Vitesse moyenne (km/h)</th>
+							<th>Durée (H:MM:SS)</th>
+							<th>Distance (km)</th>
+							<th>Nombre de mesures</th>
+		                </tr>
+
+		    			{% for trajet in trajets %}
+		    			
+			                <tr>
+			                	
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">{{trajet.debut}}</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">{{trajet.vitesse_moyenne}}</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">{{trajet.duree}}</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">{{trajet.distance}}</a></td>
+								<td><a href="{% url "objRequests:trajet" trajet.id %}">{{trajet.mesure_set.count}}</a></td>
+
+			                </tr>
+			            
+			            {% empty %}
+							<p>Pas de trajet pour l'instant...</li>
+					    {% endfor %}    
+					</tbody>
+				</table>
+	        </div>
+	        <!-- /.box-body -->
+		</div>
+		<div class="box-footer">
+		        <div class="col-sm-7">
+					<div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+						<div class="col-sm-5">
+							<ul class="pagination">{% if trajets.has_previous %}
+								<li class="paginate_button previous" id="example2_previous">
+									<a href="{% url "objRequests:trajets" device_id trajets.previous_page_number %}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+								</li>{% endif %}
+								{% if trajets.has_next %}
+								<li class="paginate_button next" id="example2_next">
+								<a href="{% url "objRequests:trajets" device_id trajets.next_page_number %}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+						<div class="col-sm-5">
+							<form action="{% url "objRequests:trajets" device_id %}" method="post">
+	    						{% csrf_token %}
+								<div class="form-group has-success">
+	                  				<label class="control-label" for="inputSuccess"><i class="fa fa-book"></i> Aller à la page :</label>
+	                  					<input type="number" name="page" required="" id="id_page" onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }" class="form-control input-sm">
+	                			</div>
+	                		</form >
+	                	</div>
+								
+
+							
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+
+</section>
+</body>
+{%endblock%}

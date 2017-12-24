@@ -1,0 +1,41 @@
+{% extends 'objRequests/base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+<table class="table table-bordered">
+    <tr>
+        <th>Date</th>
+        <th>Longitude</th>
+        <th>Latitude</th>
+        <th>Coolant Temperature (C°)</th>
+        <th>Vitesse (km/h)</th>
+        <th>Variation de la vitesse (km/h)</th>
+        <th>RPM (tours/minute)</th>
+        <th>Variation RPM (tours/minute)</th>
+        <th>MAF</th>
+        <th>Variation MAF</th>
+        <th>Charge du moteur</th>
+        <th>Variation de la charge du moteur<th>
+    </tr>
+    {% for message in messages %}
+    <tr>
+        <th>{{message.timestamp}}</th>
+        <th>{{message.longitude}}</th>
+        <th>{{message.latitude}}</th>
+        <th>{{message.coolant_temp}}</th>
+        <th>{{message.speed}}</th>
+        <th>{{message.speed_var}}</th>
+        <th>{{message.rpm}}</th>
+        <th>{{message.rpm_var}}</th>
+        <th>{{message.maf}}</th>
+        <th>{{message.maf_var}}</th>
+        <th>{{message.load}}</th>
+        <th>{{message.load_var}}<th>
+    </tr>
+    {% empty %}
+    <tr>
+        <th>Pas de message.</th>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
