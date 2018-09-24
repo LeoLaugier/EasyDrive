@@ -1,5 +1,5 @@
 # EasyDrive
-Arnaud d'Esquerre, Léo Laugier, Léon Cardineaud, Olivier Rouanet.
+
 
 • EasyDrive is both an entrepreneurial and academic project of remote driving analysis through the Internet of Things.
 
